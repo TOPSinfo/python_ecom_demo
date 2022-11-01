@@ -1,5 +1,7 @@
 category/__pycache__/
 store/__pycache__/
-cart/__pycache__/
-django_ecom/__pycache__/
 db.sqlite3
+carts/migrations/
+store/migrations/
+carts/__pycache__/
+django_ecom/__pycache__/
