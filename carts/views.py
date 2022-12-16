@@ -18,6 +18,12 @@ def add_cart(request,product_id):
     current_user = request.user
     product = Product.objects.get(id=product_id)
 
+    try:
+        cart = Cart.objects.get(cart_id = _cart_id(request))
+    except Cart.DoesNotExist:
+        cart = Cart.objects.create(cart_id = _cart_id(request))
+        cart.save()
+
     ## check if user is authenticated
     if current_user.is_authenticated:
         product_variations = []
@@ -60,9 +66,11 @@ def add_cart(request,product_id):
                 item.save()
             
         else:
+
             cart_item = CartItem.objects.create(
                 product = product,
-                userr = current_user,
+                user = current_user,
+                cart = cart,
                 quantity = 1
             )
             if len(product_variations)>0:
@@ -86,14 +94,6 @@ def add_cart(request,product_id):
                     product_variations.append(variation)
                 except Exception as e:
                     print(e)
-            
-        try:
-            cart = Cart.objects.get(cart_id = _cart_id(request))
-        except Cart.DoesNotExist:
-            cart = Cart.objects.create(
-                cart_id = _cart_id(request)
-            )
-        cart.save()
 
         # print(product_variations)
 
