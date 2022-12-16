@@ -1,7 +1,7 @@
 from email.policy import default
 from tokenize import blank_re
 from django.db import models
-
+from accounts.models import Account
 from store.models import Product, Variation
 
 # Create your models here.
@@ -22,6 +22,7 @@ class CartItem(models.Model):
     variations = models.ManyToManyField(Variation,blank=True)
     quantity = models.IntegerField()
     is_active = models.BooleanField(default=True)
+    user = models.ForeignKey(Account,on_delete=models.CASCADE,null=True)
 
 
     def subtotal(self):
