@@ -1,6 +1,7 @@
 db.sqlite3
 carts/migrations/
 store/migrations/
+orders/migrations/
 category/migrations/
 accounts/migrations/
 category/__pycache__/
@@ -8,3 +9,4 @@ carts/__pycache__/
 django_ecom/__pycache__/
 accounts/__pycache__/
 store/__pycache__/
+orders/__pycache__/
