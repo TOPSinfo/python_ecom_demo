@@ -1,6 +1,7 @@
 # Ecommerce Website
 
 This is an Ecommerce website which has end to end functionalities
+Using Django Framework
 
 ## Main features
 
