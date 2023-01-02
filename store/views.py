@@ -1,6 +1,6 @@
-from itertools import product
+from itertools import product 
 from unicodedata import category
-from django.shortcuts import render , get_object_or_404
+from django.shortcuts import render , get_object_or_404 ,redirect
 from carts.models import Cart, CartItem
 from category.models import Category
 from .models import Product
@@ -8,6 +8,11 @@ from carts.views import _cart_id
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 from django.http import HttpResponse
 from django.db.models import Q
+from .models import ReviewRating ,ProductGallery
+from .forms import ReviewForm
+from django.contrib import messages
+from orders.models import OrderProduct
+
 # Create your views here.
 
 
@@ -43,9 +48,24 @@ def product_details(request, category_slug,product_slug):
     except Exception as e:
         raise e
     
+   
+    try:
+        ordered_products = OrderProduct.objects.filter(user=request.user,product_id=product_details.id).exists()
+    except :
+        ordered_products = None    
+
+    reviews = ReviewRating.objects.filter(product_id=product_details.id,status=True)
+
+    product_gallery = ProductGallery.objects.filter(product_id = product_details.id)
+
+    
+    
     context = {
         "product_details" : product_details,
-        "in_cart" : in_cart
+        "in_cart" : in_cart,
+        "order_products" : ordered_products,
+        "reviews": reviews,
+        "product_gallery": product_gallery,
     }
     return render(request, 'store/product_details.html',context)
 
@@ -69,3 +89,32 @@ def search(request):
     }
 
     return render(request, 'store/store.html',context)
+
+
+
+def submit_review(request,product_id):
+
+    url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+
+        try:
+            review = ReviewRating.objects.get(user__id=request.user.id,product__id=product_id)
+
+            form = ReviewForm(request.POST,instance=review)
+            form.save()
+            messages.success(request,"Review updated Successfully")
+
+
+        except:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                data = ReviewRating()
+                data.subject = form.cleaned_data["subject"]
+                data.review = form.cleaned_data["review"]
+                data.rating = form.cleaned_data["rating"]
+                data.ip = request.META.get('REMOTE_ADDR')
+                data.product_id = product_id
+                data.user_id = request.user.id
+                data.save()
+                messages.success(request,"Review Submitted Successfully")
+                return redirect(url)

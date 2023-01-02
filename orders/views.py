@@ -29,7 +29,8 @@ def payments(request):
     order.is_ordered = True
     order.save()
 
-    cart_items = CartItem.objects.filter(user = request.user,)
+    cart_items = CartItem.objects.filter(user = request.user)
+    print(cart_items.count())
 
 
     for item in cart_items:
@@ -46,7 +47,7 @@ def payments(request):
 
 
         cart_item = CartItem.objects.get(id = item.id)
-        product_variations = cart_item.variations.all()
+        product_variations = cart_item.variations.all()  
         order_prod = OrderProduct.objects.get(id=order_product.id)
         order_prod.variations.set(product_variations)
         order_prod.save()
@@ -57,7 +58,7 @@ def payments(request):
         product.save()
 
 
-        CartItem.objects.filter(user = request.user).delete()
+    CartItem.objects.filter(user = request.user).delete()
 
 
     mail_subjet = "Thank you for your order !"
