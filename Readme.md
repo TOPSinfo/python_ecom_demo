@@ -28,7 +28,12 @@ pip install -r requirements.txt
 
 Then simply apply the migrations:
 
-$ python manage.py migrate
+```bash
+python manage.py migrate
+```
+
 You can now run the development server:
 
-$ python manage.py runserver
+```bash
+python manage.py runserver
+```
